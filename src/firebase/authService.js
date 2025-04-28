@@ -5,3 +5,4 @@ export const signupWithEmail = (email, password) => createUserWithEmailAndPasswo
 export const loginWithEmail = (email, password) => signInWithEmailAndPassword(auth, email, password);
 export const loginWithGoogle = () => signInWithPopup(auth, provider);
 export const logout = () => signOut(auth);
+export const getCurrentUser = () => auth.currentUser;

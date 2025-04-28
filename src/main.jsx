@@ -4,7 +4,9 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './index.css'; // Assuming you are using TailwindCSS or basic CSS
+// import './index.css'; // Assuming you are using TailwindCSS or basic CSS
+import './styles/styles.css';
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

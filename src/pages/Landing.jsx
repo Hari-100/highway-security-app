@@ -1,20 +1,22 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Landing = () => {
   return (
-    <section className="flex flex-col justify-center items-center text-center p-10 h-screen bg-gradient-to-r from-blue-400 to-blue-600 text-white">
-      <h1 className="text-5xl font-bold mb-6">Highway Security System</h1>
-      <p className="text-lg mb-8">Quick Emergency Reporting | Fast Response | Safety First</p>
-      <div className="flex gap-6">
-        <Link to="/login" className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
-          Login
-        </Link>
-        <Link to="/signup" className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-blue-100">
-          Signup
-        </Link>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center p-8">
+      <div className="max-w-lg w-full">
+        <h1 className="text-4xl font-extrabold mb-4">Welcome to Highway Security System</h1>
+        <p className="mb-6">Your safety is our priority. Take immediate action if you see any unlawful activity.</p>
+        <div className="flex justify-center space-x-4">
+          <Link to="/login">
+            <button className="px-6 py-3 bg-white text-blue-600 rounded-md hover:bg-gray-100 transition">Login</button>
+          </Link>
+          <Link to="/signup">
+            <button className="px-6 py-3 bg-white text-blue-600 rounded-md hover:bg-gray-100 transition">Sign Up</button>
+          </Link>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 
