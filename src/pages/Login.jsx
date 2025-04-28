@@ -16,16 +16,16 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
-        <h1 className="text-center text-2xl font-bold mb-6">Login</h1>
+    <div className="flex items-center justify-center min-h-screen bg-black">
+      <div className="bg-blue-900 p-8 rounded-lg shadow-lg max-w-sm w-full">
+        <h1 className="text-center text-3xl font-bold text-white mb-6">Login</h1>
         <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+            className="w-full p-3 border border-blue-500 bg-blue-800 text-white rounded-md focus:outline-none focus:border-blue-300"
             required
           />
           <input
@@ -33,10 +33,13 @@ const Login = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+            className="w-full p-3 border border-blue-500 bg-blue-800 text-white rounded-md focus:outline-none focus:border-blue-300"
             required
           />
-          <button type="submit" className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
+          >
             Login
           </button>
         </form>
