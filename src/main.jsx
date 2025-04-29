@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import "leaflet/dist/leaflet.css";
 import 'react-toastify/dist/ReactToastify.css';
 // import './index.css'; // Assuming you are using TailwindCSS or basic CSS
 // src/main.js

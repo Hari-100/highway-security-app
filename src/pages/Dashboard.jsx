@@ -1,26 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser, useAuth } from '@clerk/clerk-react';
-import { submitReport } from '../firebase/reportService';
 import { toast } from 'react-hot-toast';
-import { useGeolocated } from 'react-geolocated'; // ✅ Correct hook
+import { useGeolocated } from 'react-geolocated';
+import supabase from '../utils/supabase';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { signOut } = useAuth();
 
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
-    positionOptions: { enableHighAccuracy: true },
-    userDecisionTimeout: 5000,
-  });
-
   const [showForm, setShowForm] = useState(false);
   const [type, setType] = useState('');
   const [media, setMedia] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const adminDomains = ['police.in', 'highwaypatrol.in'];
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+    positionOptions: { enableHighAccuracy: true },
+    userDecisionTimeout: 5000,
+  });
+
+  const adminDomains = ['police.in', 'highwaypatrol.in', 'gmail.com'];
 
   const handleAdminDashboard = () => {
     const userEmail = user.primaryEmailAddress?.emailAddress || '';
@@ -35,26 +35,44 @@ const Dashboard = () => {
 
   const handleReportSubmit = async (e) => {
     e.preventDefault();
-    if (!type) {
-      toast.error('Please select the type of issue.');
-      return;
-    }
-    if (!coords) {
-      toast.error('Location not available. Please allow location access.');
-      return;
-    }
+    if (!type) return toast.error('Please select the type of issue.');
+    if (!coords) return toast.error('Location not available.');
 
     setSubmitting(true);
 
     try {
-      await submitReport({
-        type,
-        location: {
-          lat: coords.latitude,
-          lng: coords.longitude,
+      // 1. Upload media (if available)
+      let mediaUrl = '';
+      if (media) {
+        const fileName = `${Date.now()}_${media.name}`;
+        const { data, error: uploadError } = await supabase.storage
+          .from('reports')
+          .upload(fileName, media);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage
+          .from('reports')
+          .getPublicUrl(fileName);
+        mediaUrl = publicUrlData.publicUrl;
+      }
+
+      // 2. Insert into reports table
+      const { error: insertError } = await supabase.from('reports').insert([
+        {
+          type,
+          location: {
+            lat: coords.latitude,
+            lng: coords.longitude,
+          },
+          media_url: mediaUrl,
+          status: 'Raised',
+          created_by: user.primaryEmailAddress.emailAddress,
         },
-        media: media,
-      });
+      ]);
+
+      if (insertError) throw insertError;
+
       toast.success('Issue reported successfully!');
       setType('');
       setMedia(null);
@@ -67,25 +85,11 @@ const Dashboard = () => {
     }
   };
 
-  if (!isGeolocationAvailable) {
-    return <div>Your browser does not support Geolocation</div>;
-  }
-
-  if (!isGeolocationEnabled) {
-    return <div>Geolocation is not enabled</div>;
-  }
-
-  if (!coords) {
-    return <div>Loading location...</div>;
-  }
-
   return (
     <div className="p-6 flex flex-col items-center space-y-8">
-
       <h2 className="text-2xl font-bold">Dashboard</h2>
 
       <div className="flex flex-col space-y-4 w-full max-w-md">
-
         <button
           onClick={() => setShowForm(true)}
           className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition"
@@ -133,7 +137,7 @@ const Dashboard = () => {
 
             <input
               type="file"
-              accept="image/,video/"
+              accept="image/*,video/*"
               onChange={(e) => setMedia(e.target.files[0])}
               className="border border-gray-300 rounded px-4 py-2"
             />
@@ -155,7 +159,6 @@ const Dashboard = () => {
                 {submitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>
-
           </form>
         </div>
       )}

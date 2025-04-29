@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getAllReports, updateReportStatus } from '../firebase/reportServiceService';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { useUser } from '@clerk/clerk-react';
-import { toast } from 'react-hot-toast'; // You were using toast but forgot to import
+import { toast } from 'react-hot-toast';
+import supabase from '../utils/supabase';
 
 const AdminDashboard = () => {
   const [reports, setReports] = useState([]);
@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const adminDomains = ['police.in', 'highwaypatrol.in', 'gmail.com'];
 
   useEffect(() => {
-    if (!user) return; // wait for Clerk to load user
+    if (!user) return;
 
     const userEmail = user?.primaryEmailAddress?.emailAddress || '';
     const domain = userEmail.split('@')[1];
@@ -26,12 +26,13 @@ const AdminDashboard = () => {
     } else {
       fetchReports();
     }
-  }, [user]); // IMPORTANT: add user dependency
+  }, [user]);
 
   const fetchReports = async () => {
     try {
-      const fetchedReports = await getAllReports();
-      setReports(fetchedReports);
+      const { data, error } = await supabase.from('reports').select('*');
+      if (error) throw error;
+      setReports(data);
     } catch (error) {
       console.error(error);
       toast.error('Failed to fetch reports');
@@ -41,18 +42,27 @@ const AdminDashboard = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    await updateReportStatus(id, newStatus);
-    fetchReports();
+    const { error } = await supabase
+      .from('reports')
+      .update({ status: newStatus })
+      .eq('id', id);
+
+    if (error) {
+      console.error(error);
+      toast.error('Failed to update status');
+    } else {
+      fetchReports();
+    }
   };
 
-  const customIcon = new L.Icon({
-    iconUrl: require('../assets/marker-icon.png'),
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-    shadowSize: [41, 41],
-  });
+//   const customIcon = new L.Icon({
+//     iconUrl: markerIcon,
+//     iconSize: [25, 41],
+//     iconAnchor: [12, 41],
+//     popupAnchor: [1, -34],
+//     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+//     shadowSize: [41, 41],
+//   });
 
   if (loading) return <div className="flex justify-center mt-20">Loading...</div>;
 
@@ -60,23 +70,21 @@ const AdminDashboard = () => {
     <div className="p-6 flex flex-col space-y-8">
       <h2 className="text-2xl font-bold text-center">Admin Dashboard</h2>
 
-      {/* Map Section */}
       <div className="h-[500px] w-full">
-        <MapContainer center={[20.5937, 78.9629]} zoom={5} scrollWheelZoom={true} className="h-full w-full rounded-lg shadow">
+        <MapContainer center={[12.9716, 77.5946]} zoom={5} scrollWheelZoom className="h-full w-full rounded-lg shadow">
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           {reports.map((report) => (
             report.location && (
               <Marker
                 key={report.id}
                 position={[report.location.lat, report.location.lng]}
-                icon={customIcon}
               >
                 <Popup>
                   <div className="text-sm">
                     <p><strong>Type:</strong> {report.type}</p>
                     <p><strong>Status:</strong> {report.status}</p>
-                    {report.mediaUrl && (
-                      <a href={report.mediaUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                    {report.media_url && (
+                      <a href={report.media_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
                         View Media
                       </a>
                     )}
@@ -88,7 +96,6 @@ const AdminDashboard = () => {
         </MapContainer>
       </div>
 
-      {/* Table Section */}
       <div className="overflow-x-auto">
         <table className="table-auto w-full border-collapse border border-gray-200">
           <thead>
@@ -105,11 +112,11 @@ const AdminDashboard = () => {
               <tr key={report.id}>
                 <td className="border border-gray-200 px-4 py-2">{report.type}</td>
                 <td className="border border-gray-200 px-4 py-2">
-                  {report.location?.lat.toFixed(3)}, {report.location?.lng.toFixed(3)}
+                  {report.location?.lat?.toFixed(3)}, {report.location?.lng?.toFixed(3)}
                 </td>
                 <td className="border border-gray-200 px-4 py-2">
-                  {report.mediaUrl ? (
-                    <a href={report.mediaUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                  {report.media_url ? (
+                    <a href={report.media_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                       View
                     </a>
                   ) : (
@@ -135,9 +142,9 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 };
 
 export default AdminDashboard;
+// [20.5937, 78.9629]

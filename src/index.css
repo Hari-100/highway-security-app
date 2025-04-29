@@ -72,3 +72,7 @@ button:focus-visible {
 @tailwind components;
 @tailwind utilities;
 @import url('https://unpkg.com/leaflet/dist/leaflet.css');
+
+.leaflet-container {
+  height: 100vh;
+}
