@@ -5,9 +5,9 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import "leaflet/dist/leaflet.css";
 import 'react-toastify/dist/ReactToastify.css';
-// import './index.css'; // Assuming you are using TailwindCSS or basic CSS
+// import './index.css';
 // src/main.js
-import './index.css'; // Or wherever your Tailwind CSS file is located
+import './index.css';
 import { ClerkProvider } from '@clerk/clerk-react';
 
 const clerkPubKey = "pk_test_cXVpY2stZm9hbC0zMC5jbGVyay5hY2NvdW50cy5kZXYk";

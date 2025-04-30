@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGeolocated } from "react-geolocated";
-import { uploadIssueReport } from '../firebase/reportService'; // we'll create this
+import { uploadIssueReport } from '../firebase/reportService';
 
 const ReportIssue = () => {
   const [type, setType] = useState('');

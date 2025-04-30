@@ -158,7 +158,7 @@ import { useUser } from '@clerk/clerk-react';
 import { toast } from 'react-hot-toast';
 import supabase from '../utils/supabase';
 import 'leaflet/dist/leaflet.css';
-import '../styles/glassmorphism.css'; // You need to create this CSS file
+import '../styles/glassmorphism.css';
 
 const raisedIcon = new L.Icon({
   iconUrl: 'https://cdn-icons-png.flaticon.com/512/484/484167.png',

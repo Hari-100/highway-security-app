@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { useGeolocated } from 'react-geolocated';
 import supabase from '../utils/supabase';
 import { motion } from 'framer-motion';
-import { FiAlertTriangle } from 'react-icons/fi'; // warning icon
+import { FiAlertTriangle } from 'react-icons/fi';
 import bgImage from '../assets/image-3000x2500.jpg';
 
 const Dashboard = () => {
@@ -242,7 +242,7 @@ return (
   <div
     className="min-h-screen flex flex-col p-6 relative"
     style={{
-      background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)', // light gray to light blue
+      background: 'linear-gradient(to bottom right, #f3f4f6, #e0f2fe)',
     }}
   >
     {/* Top Bar */}
@@ -274,7 +274,7 @@ return (
       </div>
     </div>
 
-    {/* Informational Card */}
+    
     <div className="mx-auto max-w-4xl mb-12 p-8 glassmorphism border border-blue-200 shadow-2xl rounded-2xl text-center bg-white/60 backdrop-blur-md">
       <h2 className="text-4xl font-extrabold text-red-600 mb-4 drop-shadow-lg">
         🚨 Emergency Highway Safety Assistance 🚨
@@ -317,7 +317,7 @@ return (
       </div>
     </div>
 
-    {/* Report Form Modal */}
+    
     {showForm && (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
         <motion.form
